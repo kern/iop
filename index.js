@@ -1,6 +1,8 @@
 var express = require('express')
+var http = require('http')
 var path = require('path')
 var sassMiddleware = require('node-sass-middleware')
+var socketIO = require('socket.io')
 
 var app = express()
 
@@ -12,8 +14,21 @@ app.use(sassMiddleware({
 
 app.use(express.static(path.join(__dirname, 'static')))
 
-var server = app.listen(process.env.PORT || 3000, function () {
+var server = new http.Server(app)
+var io = socketIO(server)
+
+server.listen(process.env.PORT || 3000, function () {
   var host = server.address().address
   var port = server.address().port
   console.log('IoP listening on ' + host + ':' + port)
+})
+
+io.on('connection', function (socket) {
+  var i = setInterval(function () {
+    socket.emit('message', 'Hello world')
+  }, 1000)
+
+  socket.on('disconnect', function () {
+    clearInterval(i)
+  })
 })

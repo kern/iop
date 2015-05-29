@@ -1,3 +1,5 @@
+var socket = io()
+
 var App = React.createClass({
   render: function () {
     return <main>
@@ -21,16 +23,30 @@ var InfoPanel = React.createClass({
 
   getInitialState: function () {
     return {
-      messages: ['foo', 'bar']
+      messages: [],
+      count: 0
     }
+  },
+
+  componentDidMount: function () {
+    var self = this
+    socket.on('message', function (m) {
+      self.setState({
+        messages: [{
+          id: self.state.count,
+          text: m
+        }].concat(self.state.messages),
+        count: self.state.count + 1
+      })
+    })
   },
 
   render: function () {
     return <div className="info-panel">
       <h2>Information Feed</h2>
       <ul>
-        {this.state.messages.map(function (m) {
-          return <li key={m}>{m}</li>
+        {this.state.messages.map(function (o) {
+          return <li key={o.id}>{o.text}</li>
         })}
       </ul>
     </div>
