@@ -1,4 +1,126 @@
+// CSS Reset
+// =========
+//
+// http://meyerweb.com/eric/tools/css/reset/ 
+// v2.0 | 20110126
+// License: none (public domain)
+
+* { box-sizing: border-box; }
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
+blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img,
+ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i,
+center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption,
+tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section,
+summary, time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+
+html {
+    height: 100%;
+}
+
 body {
-    background: red;
-    color: green;
+    height: 100%;
+    line-height: 1;
+    position: relative;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+blockquote:before, blockquote:after, q:before, q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+// Fonts
+// =====
+
+@font-face {
+    font-family: 'Stiff Staff';
+    src: url('/fonts/stiff_staff-webfont.eot');
+    src: url('/fonts/stiff_staff-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/stiff_staff-webfont.woff2') format('woff2'),
+         url('/fonts/stiff_staff-webfont.woff') format('woff'),
+         url('/fonts/stiff_staff-webfont.ttf') format('truetype'),
+         url('/fonts/stiff_staff-webfont.svg#stiff_staffheavy') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+// Our Stuff
+// =========
+
+header {
+    height: 40px;
+    background: white;
+    border-bottom: 1px solid #EEE;
+}
+
+h1 {
+    font: 16px/40px 'Stiff Staff', serif;
+    padding-left: 20px;
+    color: #333;
+}
+
+h2 {
+    font: 16px/40px 'Stiff Staff', serif;
+    padding-left: 20px;
+    color: white;
+}
+
+main {
+    display: table;
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 40px);
+}
+
+.map-panel {
+    display: table-cell;
+    width: 75%;
+    background: blue;
+}
+
+.info-panel {
+    display: table-cell;
+    max-width: 360px;
+    width: 25%;
+    background: #555;
+    color: white;
+    border-left: 2px solid #333;
+
+    ul {
+        margin: 0 20px 20px;
+    }
+
+    li {
+        font: 14px/20px sans-serif;
+        padding-bottom: 10px;
+
+        &:before {
+            content: '❋ ';
+        }
+    }
 }
