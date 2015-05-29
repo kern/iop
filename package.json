@@ -4,7 +4,8 @@
   "description": "Making our parks smarter, cleaner, and more connected.",
   "main": "index.js",
   "dependencies": {
-    "express": "^4.12.4"
+    "express": "^4.12.4",
+    "node-sass-middleware": "^0.8.0"
   },
   "scripts": {
     "start": "node index.js",
