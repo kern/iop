@@ -86,6 +86,8 @@ setInterval(function () {
   }
 
   io.emit('robots', robots)
+  io.emit('trash', trash)
+
 }, 100)
 
 io.on('connection', function (socket) {
