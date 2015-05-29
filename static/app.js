@@ -11,9 +11,36 @@ var App = React.createClass({
 
 var MapPanel = React.createClass({
 
+  getInitialState: function () {
+    return {
+      robots: [],
+      trash: []
+    }
+  },
+
+  componentDidMount: function () {
+    var self = this
+    socket.on('robots', function (r) {
+      self.setState({
+        robots: r
+      })
+    })
+    socket.on('trash', function (t) {
+      self.setState({
+        trash: t
+      })
+    })
+  },
+
   render: function () {
     return <div className="map-panel">
-      This is where the map goes.
+      {this.state.robots.map(function (r) {
+        return <Robot key={r.id} h={r.h} v={r.v} />
+      })}
+
+      {this.state.trash.map(function (t) {
+        return <Trash key={t.id} h={t.h} v={t.v} />
+      })}
     </div>
   }
 
@@ -43,13 +70,41 @@ var InfoPanel = React.createClass({
 
   render: function () {
     return <div className="info-panel">
-      <h2>Information Feed</h2>
-      <ul>
-        {this.state.messages.map(function (o) {
-          return <li key={o.id}>{o.text}</li>
-        })}
-      </ul>
+      <div className="inner">
+        <h2>Information Feed</h2>
+        <ul>
+          {this.state.messages.map(function (o) {
+            return <li key={o.id}>{o.text}</li>
+          })}
+        </ul>
+      </div>
     </div>
+  }
+
+})
+
+var Robot = React.createClass({
+
+  render: function () {
+    var style = {
+      top: this.props.v + '%',
+      left: this.props.h + '%'
+    }
+
+    return <div className="robot" style={style} />
+  }
+
+})
+
+var Trash = React.createClass({
+
+  render: function () {
+    var style = {
+      top: this.props.v + '%',
+      left: this.props.h + '%'
+    }
+
+    return <div className="trash" style={style} />
   }
 
 })

@@ -98,9 +98,12 @@ main {
 }
 
 .map-panel {
+    position: relative;
     display: table-cell;
     width: 75%;
-    background: blue;
+    background: url("/map.png") no-repeat center center;
+    background-size: cover;
+    overflow: hidden;
 }
 
 .info-panel {
@@ -110,6 +113,11 @@ main {
     background: #555;
     color: white;
     border-left: 2px solid #333;
+
+    .inner {
+        height: 100%;
+        overflow-y: scroll;
+    }
 
     ul {
         margin: 0 20px 20px;
@@ -123,4 +131,20 @@ main {
             content: '❋ ';
         }
     }
+}
+
+.robot {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: red;
+    margin: -25px 0 0 -25px;
+}
+
+.trash {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: blue;
+    margin: -5px 0 0 -5px;
 }
