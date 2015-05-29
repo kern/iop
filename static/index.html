@@ -6,11 +6,19 @@
         <title>Internet of Parks</title>
 
         <link href="/app.css" rel="stylesheet" />
-        <script src="/app.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js" /></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js" /></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/app.js" type="text/jsx"></script>
 
     </head>
 
     <body>
-        <h1>Internet of Parks</h1>
+        <header>
+            <h1>Internet of Parks</h1>
+        </header>
+
+        <div id="app"></div>
     </body>
 </html>
