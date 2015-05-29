@@ -1,18 +1,19 @@
-var request = require('request');
+var request = require('request')
 
-var baseURL = 'http://tmforum-test.apigee.net/orionlabfi-ware/version/'
+var baseURL = 'http://env-0693795.jelastic.servint.net/'
 var token   = 'MRiEY85d9xqsDRMMymRPBr36T9B3kX'
 var headers = {
     'Content-Type': 'application/json',
     'Accept':       'application/json'
+    // 'Auth-token':   token
 }
 
-exports.createIncident = function (message, nxt) {
+exports.createIncident = function (message, res) {
     // creating an incident
     var cont = false
     if (typeof message == 'object') {
         if (message.severity == undefined) {
-            message.severity = 'Middle'
+            message.severity = 'High'
         }
         if (message.type == undefined) {
             message.type = 'cleanup'
@@ -21,12 +22,12 @@ exports.createIncident = function (message, nxt) {
             cont = true
         }
     }
-    if cont {
+    if (cont) {
         request({
             method:     'POST',
-            uri:        baseURL + 'troubleTicket',
+            uri:        baseURL + 'DSTroubleTicket/api/troubleTicketManagement/v2/troubleTicket',
             headers:    headers,
-            formData:   {
+            body: {
                 "description":  message.description,
 
                 "severity":     message.severity,
@@ -40,11 +41,28 @@ exports.createIncident = function (message, nxt) {
                 ],
                 "note": [
                 ]
+            },
+            json: true
+        }, function(err, httpResponse, body) {
+            if (err) {
+                res({
+                    success: false,
+                    reason: 'http_error'
+                })
+            } else {
+                res({
+                    success: true,
+                    httpResponse: httpResponse,
+                    body: body
+                })
             }
         })
     } else {
         // error
-
+        res({
+            success: false,
+            reason: 'bad_input'
+        })
     }
 
 }

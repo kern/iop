@@ -4,6 +4,7 @@ var path = require('path')
 var sassMiddleware = require('node-sass-middleware')
 var socketIO = require('socket.io')
 
+var api = require('./api')
 var app = express()
 
 app.use(sassMiddleware({
@@ -24,11 +25,21 @@ server.listen(process.env.PORT || 3000, function () {
 })
 
 io.on('connection', function (socket) {
-  var i = setInterval(function () {
-    socket.emit('message', 'Hello world')
-  }, 1000)
 
-  socket.on('disconnect', function () {
-    clearInterval(i)
+  socket.on('createIncident', function (data, res) {
+    api.createIncident(data, res)
   })
+
+  socket.on('blah', function (data, res) {
+    // data
+    res("foobar")
+  })
+
+  // var i = setInterval(function () {
+  //   socket.emit('message', 'Hello world')
+  // }, 1000)
+
+  // socket.on('disconnect', function () {
+  //   clearInterval(i)
+  // })
 })
