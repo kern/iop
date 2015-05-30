@@ -140,6 +140,7 @@ main {
     background: url('/robot.png') no-repeat center center;
     background-size: 50px 36px;
     margin: -18px 0 0 -25px;
+    border-radius: 3px;
 }
 
 .trash {
@@ -158,9 +159,29 @@ main {
 }
 
 .broken {
-    -webkit-animation:spin 4s linear infinite;
-    -moz-animation:spin 4s linear infinite;
-    animation:spin 4s linear infinite;
+    -webkit-animation: flash 900ms ease-in-out infinite, spin 4s linear infinite;
+    -moz-animation: flash 900ms ease-in-out infinite, spin 4s linear infinite;
+    animation: flash 900ms ease-in-out infinite, spin 4s linear infinite;
+}
+
+
+@-webkit-keyframes flash {
+    0% {
+        background-color: red;
+
+    }
+    25% {
+        background-color: orange;
+
+    }
+    75% {
+        background-color: yellow;
+
+    }
+    100% {
+        background-color: red;
+
+    }
 }
 
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg);  }  }
