@@ -1,7 +1,7 @@
 // CSS Reset
 // =========
 //
-// http://meyerweb.com/eric/tools/css/reset/ 
+// http://meyerweb.com/eric/tools/css/reset/
 // v2.0 | 20110126
 // License: none (public domain)
 
@@ -155,4 +155,18 @@ main {
         background: url("/marked.png") no-repeat center center;
         background-size: cover;
     }
+}
+
+@media screen and (max-width: 549px) {
+    .map-panel, .info-panel {
+        width: 100%;
+        display: block;
+    }
+    .map-panel {
+        height: calc((100vh - 40px) * 0.75);
+    }
+    .info-panel {
+        height: calc((100vh - 40px) * 0.25);
+    }
+
 }

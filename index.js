@@ -167,6 +167,7 @@ io.on('connection', function (socket) {
     reallocateRobots()
     api.createIncident(trashID, function (response) {
       console.log(response.httpResponse.body.id)
+      // console.log(response.httpResponse.body)
       trash[trashID].ticket = response.httpResponse.body.id
       io.emit('message', 'ticket created for trashcan ' + trashID + ' with id ' + response.httpResponse.body.id)
     })
