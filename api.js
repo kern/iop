@@ -8,7 +8,8 @@ var headers = {
     // 'Auth-token':   token
 }
 
-var troubleTicket = baseURL + "DSTroubleTicket/api/troubleTicketManagement/v2"
+var troubleTicket   = baseURL + "DSTroubleTicket/api/troubleTicketManagement/v2"
+var productOrder    = baseURL + "DSProductOrdering/api/productOrdering/v2"
 
 exports.createIncident = function (trashId, res) {
     request({
@@ -142,5 +143,40 @@ exports.robotFix = function (robot, res) {
   })
 }
 
-exports.orderBags = function () {
+exports.orderBags = function (res) {
+  return
+  request({
+    method: "POST",
+    uri: productOrder,
+    headers: headers,
+    body: {
+        // externalId:"2",
+        // priority:"4",
+        // "description":"Buying more bags",
+        // "category":"uncategorized",
+        // "state":"Acknowledged",
+        // // "requestedStartDate":"2015-04-01T16:42:23Z",
+        // // "requestedCompletionDate":"2015-04-03T16:42:23Z",
+        // // "expectedCompletionDate":null,
+        // "notificationContact":"Mr Brun",
+        // "note":[{"text":"A free text detailing the note","date":null}],
+        // "relatedParty":[{
+        //     "id":"345221",
+        //     "href":"http://serverlocation:port/partyManagement/customer/345221",
+        //     "name":"John Doe",
+        //     "role":"customer"
+        // },{
+        //     id:"4563",
+        //     href:"http://serverlocation:port/partnerManagement/partner/4563",
+        //     role:"seller"
+        // }],
+        // orderItem:[{
+        //     id:"1",
+        //     product:{
+        //         id:578
+        //     }
+        // }
+        // ]
+    }
+  })
 }
