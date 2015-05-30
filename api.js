@@ -11,6 +11,7 @@ var headers = {
 var troubleTicket = "DSTroubleTicket/api/troubleTicketManagement/v2"
 
 exports.createIncident = function (message, res) {
+    console.log('createIncident')
     // creating an incident
     var cont = false
     if (typeof message == 'object') {
@@ -50,7 +51,8 @@ exports.createIncident = function (message, res) {
                 res({
                     success: false,
                     reason: 'http_error',
-                    httpResponse: httpResponse
+                    httpResponse: httpResponse,
+                    body: body
                 })
             } else {
                 res({
@@ -70,6 +72,7 @@ exports.createIncident = function (message, res) {
 }
 
 exports.fixIncident = function (message, res) {
+    console.log('fixIncident')
     if (message.incidentId != undefined) {
         request({
             method:     "PATCH",
@@ -84,7 +87,8 @@ exports.fixIncident = function (message, res) {
             if (err) {
                 res({
                     success: false,
-                    reason: 'http_error'
+                    reason: 'http_error',
+                    endpoint: 'fixIncident'
                 })
             } else {
                 res({
@@ -94,7 +98,6 @@ exports.fixIncident = function (message, res) {
                 })
             }
         })
-
     } else {
         // error
         res({
