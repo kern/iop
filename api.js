@@ -90,36 +90,54 @@ exports.fixIncident = function (ticket, res) {
     })
 }
 
-exports.carBreakdown = function (message, res) {
-    console.message('carBreakdown')
-    if (message.carId != undefined) {
-        request({
-
-        }, function (err, httpResponse, body) {
-            if (err) {
-                res({
-                    success: false,
-                    reason: 'http_error',
-                    endpoint: 'carBreakdown'
-                })
-            } else {
-                res({
-                    success: true,
-                    httpResponse: httpResponse,
-                    body: body
-                })
-            }
-        })
+exports.robotBreakdown = function (robot, res) {
+  res = res || function() {}
+  request({
+    method: "POST",
+    uri: 'http://52.28.33.220:3000/vehicle/v2/IOP0' + (robot + 1),
+    headers: headers,
+    body: {
+      engine: "FAILURE"
+    },
+    json: true
+  }, function (err, httpResponse, body) {
+    if (err) {
+      res({
+        success: false,
+        reason: 'http_error'
+      })
     } else {
-        res({
-            success: false,
-            reason: 'no_car'
-        })
+      res({
+        success: true,
+        httpResponse: httpResponse,
+        body: body
+      })
     }
+  })
 }
 
-
-
-
-
-
+exports.robotFix = function (robot, res) {
+  res = res || function() {}
+  request({
+    method: "POST",
+    uri: 'http://52.28.33.220:3000/vehicle/v2/IOP0' + (robot + 1),
+    headers: headers,
+    body: {
+      engine: "OK"
+    },
+    json: true
+  }, function (err, httpResponse, body) {
+    if (err) {
+      res({
+        success: false,
+        reason: 'http_error'
+      })
+    } else {
+      res({
+        success: true,
+        httpResponse: httpResponse,
+        body: body
+      })
+    }
+  })
+}

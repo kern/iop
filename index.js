@@ -66,19 +66,22 @@ var robots = [{
   h: 50,
   v: 20,
   target: null,
-  allocated: null
+  allocated: null,
+  broken: false
 }, {
   id: 1,
   h: 30,
   v: 75,
   target: null,
-  allocated: null
+  allocated: null,
+  broken: false
 }, {
   id: 2,
   h: 77,
   v: 70,
   target: null,
-  allocated: null
+  allocated: null,
+  broken: false
 }]
 
 function updateTarget(id) {
@@ -130,6 +133,7 @@ setInterval(function () {
   var reallocate = false
 
   for (var robot of robots) {
+    if (robot.broken) continue
     robot.h = robot.h + (robot.h > robot.target[0] ? -1 : 1) * speed
     robot.v = robot.v + (robot.v > robot.target[1] ? -1 : 1) * speed
 
@@ -159,6 +163,32 @@ setInterval(function () {
 
 }, 100)
 
+function breakRobotRandomly() {
+
+  var breakTime = 2000 + Math.random() * 5000
+  var fixTime = (5000 + Math.random() * 5000) + breakTime
+
+  var robot = robots[Math.floor(Math.random() * robots.length)]
+
+  setTimeout(function () {
+    io.emit('message', 'robot ' + robot.id + ' has broke down')
+    robot.broken = true
+    api.robotBreakdown(robot.id)
+    reallocateRobots()
+  }, breakTime)
+
+  setTimeout(function () {
+    io.emit('message', 'robot ' + robot.id + ' has been fixed')
+    api.robotFix(robot.id)
+    robot.broken = false
+    reallocateRobots()
+    breakRobotRandomly()
+  }, fixTime)
+
+}
+
+breakRobotRandomly()
+
 io.on('connection', function (socket) {
 
   // create trash
@@ -166,23 +196,9 @@ io.on('connection', function (socket) {
     trash[trashID].marked = true
     reallocateRobots()
     api.createIncident(trashID, function (response) {
-      console.log(response.httpResponse.body.id)
       trash[trashID].ticket = response.httpResponse.body.id
       io.emit('message', 'ticket created for trashcan ' + trashID + ' with id ' + response.httpResponse.body.id)
     })
   })
-
-  socket.on('blah', function (data, res) {
-    // data
-    res("foobar")
-  })
-
-  // var i = setInterval(function () {
-  //   socket.emit('message', 'Hello world')
-  // }, 1000)
-
-  // socket.on('disconnect', function () {
-  //   clearInterval(i)
-  // })
 
 })

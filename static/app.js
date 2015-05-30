@@ -35,7 +35,7 @@ var MapPanel = React.createClass({
   render: function () {
     return <div className="map-panel">
       {this.state.robots.map(function (r) {
-        return <Robot key={r.id} h={r.h} v={r.v} />
+        return <Robot key={r.id} h={r.h} v={r.v} broken={r.broken} />
       })}
 
       {this.state.trash.map(function (t) {
@@ -91,7 +91,10 @@ var Robot = React.createClass({
       left: this.props.h + '%'
     }
 
-    return <div className="robot" style={style} />
+    var classes = ['robot']
+    if (this.props.broken) classes.push('broken')
+
+    return <div className={classes.join(' ')} style={style} />
   }
 
 })
