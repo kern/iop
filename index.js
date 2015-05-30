@@ -24,6 +24,8 @@ server.listen(process.env.PORT || 3000, function () {
   console.log('IoP listening on ' + host + ':' + port)
 })
 
+var bagsUsed = 0
+
 var trash = [{
   id: 0,
   h: 45,
@@ -144,10 +146,15 @@ setInterval(function () {
         if (t.allocated === robot.id) {
           // Unmark!
           (function(t) {
+            bagsUsed++
+            if (bagsUsed % 5 === 0) {
+              io.emit('message', 'product order created for more trash bags')
+              api.orderBags()
+            }
             t.marked = false
             reallocate = true
             api.fixIncident(t.ticket, function() {
-              io.emit('message', 'ticket closed for trashcan ' + t.id + ' with ID ' + t.ticket)
+              io.emit('message', 'trouble ticket closed for trash can ' + t.id + ' with ID ' + t.ticket)
               t.ticket = null
             })
           })(t)
@@ -197,7 +204,7 @@ io.on('connection', function (socket) {
     reallocateRobots()
     api.createIncident(trashID, function (response) {
       trash[trashID].ticket = response.httpResponse.body.id
-      io.emit('message', 'ticket created for trashcan ' + trashID + ' with id ' + response.httpResponse.body.id)
+      io.emit('message', 'trouble ticket created for trash can ' + trashID + ' with id ' + response.httpResponse.body.id)
     })
   })
 

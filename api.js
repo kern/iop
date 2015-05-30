@@ -141,3 +141,6 @@ exports.robotFix = function (robot, res) {
     }
   })
 }
+
+exports.orderBags = function () {
+}
