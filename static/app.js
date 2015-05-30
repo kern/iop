@@ -39,7 +39,7 @@ var MapPanel = React.createClass({
       })}
 
       {this.state.trash.map(function (t) {
-        return <Trash key={t.id} h={t.h} v={t.v} />
+        return <Trash key={t.id} id={t.id} h={t.h} v={t.v} marked={t.marked} />
       })}
     </div>
   }
@@ -98,13 +98,21 @@ var Robot = React.createClass({
 
 var Trash = React.createClass({
 
+  onClick: function () {
+    if (!this.props.marked)
+      socket.emit('mark', this.props.id)
+  },
+
   render: function () {
     var style = {
       top: this.props.v + '%',
       left: this.props.h + '%'
     }
 
-    return <div className="trash" style={style} />
+    var classes = ['trash']
+    if (this.props.marked) classes.push('marked')
+
+    return <div className={classes.join(' ')} style={style} onClick={this.onClick} />
   }
 
 })
