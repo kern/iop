@@ -29,31 +29,36 @@ var trash = [{
   h: 45,
   v: 30,
   marked: false,
-  allocated: null
+  allocated: null,
+  ticket: null
 }, {
   id: 1,
   h: 60,
   v: 65,
   marked: false,
-  allocated: null
+  allocated: null,
+  ticket: null
 }, {
   id: 2,
   h: 70,
   v: 55,
   marked: false,
-  allocated: null
+  allocated: null,
+  ticket: null
 }, {
   id: 3,
   h: 80,
   v: 80,
   marked: false,
-  allocated: null
+  allocated: null,
+  ticket: null
 }, {
   id: 4,
   h: 37,
   v: 68,
   marked: false,
-  allocated: null
+  allocated: null,
+  ticket: null
 }]
 
 var robots = [{
@@ -134,8 +139,14 @@ setInterval(function () {
       for (var t of trash) {
         if (t.allocated === robot.id) {
           // Unmark!
-          t.marked = false
-          reallocate = true
+          (function(t) {
+            t.marked = false
+            reallocate = true
+            api.fixIncident(t.ticket, function() {
+              io.emit('message', 'ticket closed for trashcan ' + t.id + ' with ID ' + t.ticket)
+              t.ticket = null
+            })
+          })(t)
         }
       }
     }
@@ -154,14 +165,11 @@ io.on('connection', function (socket) {
   socket.on('mark', function (trashID) {
     trash[trashID].marked = true
     reallocateRobots()
-  })
-
-  socket.on('createIncident', function (data, res) {
-    api.createIncident(data, res)
-  })
-  // fix trash
-  socket.on('fixIncident', function (data, res) {
-    api.fixIncident(data, res);
+    api.createIncident(trashID, function (response) {
+      console.log(response.httpResponse.body.id)
+      trash[trashID].ticket = response.httpResponse.body.id
+      io.emit('message', 'ticket created for trashcan ' + trashID + ' with id ' + response.httpResponse.body.id)
+    })
   })
 
   socket.on('blah', function (data, res) {

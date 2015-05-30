@@ -8,87 +8,99 @@ var headers = {
     // 'Auth-token':   token
 }
 
-var troubleTicket = "DSTroubleTicket/api/troubleTicketManagement/v2"
+var troubleTicket = baseURL + "DSTroubleTicket/api/troubleTicketManagement/v2"
 
-exports.createIncident = function (message, res) {
-    console.log('createIncident')
-    // creating an incident
-    var cont = false
-    if (typeof message == 'object') {
-        if (message.severity == undefined) {
-            message.severity = 'High'
-        }
-        if (message.type == undefined) {
-            message.type = 'cleanup'
-        }
-        if (message.description != undefined) {
-            cont = true
-        }
-    }
-    if (cont) {
-        request({
-            method:     'POST',
-            uri:        troubleTicket + '/troubleTicket',
-            headers:    headers,
-            body: {
-                "description":  message.description,
+exports.createIncident = function (trashId, res) {
+    request({
+        method:     'POST',
+        uri:        troubleTicket + '/troubleTicket',
+        headers:    headers,
+        body: {
+            "description":  "trash",
 
-                "severity":     message.severity,
-                "type":         message.type,
-                // "creationDate": (new Date()).toISOString(),
-                // "targetResolutionDate": (new Date() + message.resolveTime).toISOString(),
-                "status": "Submitted",
-                "relatedParty": [
-                ],
-                "relatedObject": [
-                ],
-                "note": [
-                ]
-            },
-            json: true
-        }, function(err, httpResponse, body) {
-            if (err) {
-                res({
-                    success: false,
-                    reason: 'http_error',
-                    httpResponse: httpResponse,
-                    body: body
-                })
-            } else {
-                res({
-                    success: true,
-                    httpResponse: httpResponse,
-                    body: body
-                })
-            }
-        })
-    } else {
-        // error
-        res({
-            success: false,
-            reason: 'bad_input'
-        })
-    }
+            "severity":     "High",
+            "type":         'trashcan',
+            // "creationDate": (new Date()).toISOString(),
+            // "targetResolutionDate": (new Date() + message.resolveTime).toISOString(),
+            "status": "Submitted",
+            "relatedParty": [
+            // {
+            //     trashId: trashId
+            // }
+            ],
+            "relatedObject": [
+            ],
+            "note": [
+            ]
+        },
+        json: true
+    }, function(err, httpResponse, body) {
+        if (err) {
+            res({
+                success: false,
+                reason: 'http_error',
+                httpResponse: httpResponse,
+                body: body,
+                err: err
+            })
+        } else {
+            res({
+                success: true,
+                httpResponse: httpResponse,
+                body: body
+            })
+        }
+    })
 }
 
-exports.fixIncident = function (message, res) {
-    console.log('fixIncident')
-    if (message.incidentId != undefined) {
+exports.fixIncident = function (ticket, res) {
+    var url = troubleTicket + '/troubleTicket/' + ticket
+    // fixing callback hell
+    request({
+        method:     "PATCH",
+        uri:        url,
+        headers:    headers,
+        body: {
+            status: "Acknowledged",
+            statusChangeReason: "Robot saw it"
+        },
+        json: true
+    }, function(resp) {
         request({
             method:     "PATCH",
-            uri:        troubleTicket + '/troubleTicket',
+            uri:        url,
             headers:    headers,
             body: {
-                status: "Resolved",
-                statusChangeReason: "Robot fixed it",
+                status: "InProgress",
+                statusChangeReason: "Robot reached it"
             },
-            json:       true
+            json: true
+        }, function(resp) {
+            request({
+                method:     "PATCH",
+                uri:        url,
+                headers:    headers,
+                body: {
+                    status: "Resolved",
+                    statusChangeReason: "Robot fixed the trash"
+                },
+                json: true
+            }, res)
+        })
+    })
+}
+
+exports.carBreakdown = function (message, res) {
+    console.message('carBreakdown')
+    if (message.carId != undefined) {
+        request({
+
         }, function (err, httpResponse, body) {
             if (err) {
                 res({
                     success: false,
                     reason: 'http_error',
-                    endpoint: 'fixIncident'
+                    endpoint: 'carBreakdown'
                 })
             } else {
                 res({
@@ -99,13 +111,14 @@ exports.fixIncident = function (message, res) {
             }
         })
     } else {
-        // error
         res({
             success: false,
-            reason: 'no_id'
+            reason: 'no_car'
         })
     }
 }
+
+
 
 
 
