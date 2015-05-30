@@ -136,19 +136,23 @@ main {
 .robot {
     position: absolute;
     width: 50px;
-    height: 50px;
-    background: red;
-    margin: -25px 0 0 -25px;
+    height: 36px;
+    background: url('/robot.png') no-repeat center center;
+    background-size: 50px 36px;
+    margin: -18px 0 0 -25px;
 }
 
 .trash {
     position: absolute;
-    width: 10px;
-    height: 10px;
-    background: blue;
-    margin: -5px 0 0 -5px;
+    width: 20px;
+    height: 32px;
+    background: url("/unmarked.png") no-repeat center center;
+    background-size: cover;
+    margin: -16px 0 0 -10px;
+    cursor: pointer;
 
     &.marked {
-        background: green;
+        background: url("/marked.png") no-repeat center center;
+        background-size: cover;
     }
 }
