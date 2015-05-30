@@ -159,9 +159,9 @@ main {
 }
 
 .broken {
-    -webkit-animation: flash 900ms ease-in-out infinite, spin 4s linear infinite;
-    -moz-animation: flash 900ms ease-in-out infinite, spin 4s linear infinite;
-    animation: flash 900ms ease-in-out infinite, spin 4s linear infinite;
+    -webkit-animation: flash 200ms linear infinite, spin 4s linear infinite;
+    -moz-animation: flash 200ms linear infinite, spin 4s linear infinite;
+    animation: flash 200ms linear infinite, spin 4s linear infinite;
 }
 
 
@@ -170,16 +170,8 @@ main {
         background-color: red;
 
     }
-    25% {
-        background-color: orange;
-
-    }
-    75% {
-        background-color: yellow;
-
-    }
     100% {
-        background-color: red;
+        background-color: yellow;
 
     }
 }
