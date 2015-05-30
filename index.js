@@ -92,8 +92,13 @@ setInterval(function () {
 
 io.on('connection', function (socket) {
 
+  // create trash
   socket.on('createIncident', function (data, res) {
     api.createIncident(data, res)
+  })
+  // fix trash
+  socket.on('fixIncident', function (data, res) {
+    api.fixIncident(data, res);
   })
 
   socket.on('blah', function (data, res) {

@@ -8,6 +8,8 @@ var headers = {
     // 'Auth-token':   token
 }
 
+var troubleTicket = "DSTroubleTicket/api/troubleTicketManagement/v2"
+
 exports.createIncident = function (message, res) {
     // creating an incident
     var cont = false
@@ -25,7 +27,7 @@ exports.createIncident = function (message, res) {
     if (cont) {
         request({
             method:     'POST',
-            uri:        baseURL + 'DSTroubleTicket/api/troubleTicketManagement/v2/troubleTicket',
+            uri:        troubleTicket + '/troubleTicket',
             headers:    headers,
             body: {
                 "description":  message.description,
@@ -47,7 +49,8 @@ exports.createIncident = function (message, res) {
             if (err) {
                 res({
                     success: false,
-                    reason: 'http_error'
+                    reason: 'http_error',
+                    httpResponse: httpResponse
                 })
             } else {
                 res({
@@ -64,5 +67,43 @@ exports.createIncident = function (message, res) {
             reason: 'bad_input'
         })
     }
-
 }
+
+exports.fixIncident = function (message, res) {
+    if (message.incidentId != undefined) {
+        request({
+            method:     "PATCH",
+            uri:        troubleTicket + '/troubleTicket',
+            headers:    headers,
+            body: {
+                status: "Resolved",
+                statusChangeReason: "Robot fixed it",
+            },
+            json:       true
+        }, function (err, httpResponse, body) {
+            if (err) {
+                res({
+                    success: false,
+                    reason: 'http_error'
+                })
+            } else {
+                res({
+                    success: true,
+                    httpResponse: httpResponse,
+                    body: body
+                })
+            }
+        })
+
+    } else {
+        // error
+        res({
+            success: false,
+            reason: 'no_id'
+        })
+    }
+}
+
+
+
+
