@@ -5,6 +5,7 @@ var sassMiddleware = require('node-sass-middleware')
 var socketIO = require('socket.io')
 
 var api = require('./api')
+var fiware = require('./fiware')
 var app = express()
 
 app.use(sassMiddleware({
@@ -148,15 +149,16 @@ setInterval(function () {
           (function(t) {
             bagsUsed++
             if (bagsUsed % 5 === 0) {
-              io.emit('message', 'product order created for more trash bags')
+              io.emit('message', 'TM Forum Product Order created for more trash bags.')
               api.orderBags()
             }
             t.marked = false
             reallocate = true
             api.fixIncident(t.ticket, function() {
-              io.emit('message', 'trouble ticket closed for trash can ' + t.id + ' with ID ' + t.ticket)
+              io.emit('message', 'TM Forum Trouble Ticket closed for trash can ' + t.id + ' with ID ' + t.ticket + '.')
               t.ticket = null
             })
+            fiware.updateRequest(t.id, false)
           })(t)
         }
       }
@@ -178,14 +180,14 @@ function breakRobotRandomly() {
   var robot = robots[Math.floor(Math.random() * robots.length)]
 
   setTimeout(function () {
-    io.emit('message', 'robot ' + robot.id + ' has broke down')
+    io.emit('message', 'Ericsson Connected Car API has detected robot ' + robot.id + ' has broken down.')
     robot.broken = true
     api.robotBreakdown(robot.id)
     reallocateRobots()
   }, breakTime)
 
   setTimeout(function () {
-    io.emit('message', 'robot ' + robot.id + ' has been fixed')
+    io.emit('message', 'Ericsson Connect Car API has detected robot ' + robot.id + ' has been fixed.')
     api.robotFix(robot.id)
     robot.broken = false
     reallocateRobots()
@@ -196,15 +198,36 @@ function breakRobotRandomly() {
 
 breakRobotRandomly()
 
+// FIWARE integration
+
+function fillTrashRandomly() {
+
+  var fillTime = 5000 + Math.random() * 5000
+
+  var t = trash[Math.floor(Math.random() * trash.length)]
+
+  setTimeout(function () {
+    io.emit('message', 'FIWARE sensor (urn:iop:trash' + t.id + ') detected trash can ' + t.id + ' is full. Dispatching robot...')
+    t.marked = true
+    reallocateRobots()
+    fillTrashRandomly()
+    fiware.updateRequest(t.id, true)
+  }, fillTime)
+
+}
+
+fillTrashRandomly()
+
 io.on('connection', function (socket) {
 
   // create trash
   socket.on('mark', function (trashID) {
     trash[trashID].marked = true
+    fiware.updateRequest(t.id, true)
     reallocateRobots()
     api.createIncident(trashID, function (response) {
       trash[trashID].ticket = response.httpResponse.body.id
-      io.emit('message', 'trouble ticket created for trash can ' + trashID + ' with id ' + response.httpResponse.body.id)
+      io.emit('message', 'TM Forum Trouble Ticket created for trash can ' + trashID + ' with id ' + response.httpResponse.body.id + '.')
     })
   })
 
