@@ -155,8 +155,10 @@ setInterval(function () {
             t.marked = false
             reallocate = true
             api.fixIncident(t.ticket, function() {
-              io.emit('message', 'TM Forum Trouble Ticket closed for trash can ' + t.id + ' with ID ' + t.ticket + '.')
-              t.ticket = null
+              if (t.ticket !== null) {
+                io.emit('message', 'TM Forum Trouble Ticket closed for trash can ' + t.id + ' with ID ' + t.ticket + '.')
+                t.ticket = null
+              }
             })
             fiware.updateRequest(t.id, false)
           })(t)
@@ -202,7 +204,7 @@ breakRobotRandomly()
 
 function fillTrashRandomly() {
 
-  var fillTime = 5000 + Math.random() * 5000
+  var fillTime = 10000 + Math.random() * 5000
 
   var t = trash[Math.floor(Math.random() * trash.length)]
 
@@ -210,8 +212,12 @@ function fillTrashRandomly() {
     io.emit('message', 'FIWARE sensor (urn:iop:trash' + t.id + ') detected trash can ' + t.id + ' is full. Dispatching robot...')
     t.marked = true
     reallocateRobots()
-    fillTrashRandomly()
+    api.createIncident(t.id, function (response) {
+      trash[t.id].ticket = response.httpResponse.body.id
+      io.emit('message', 'TM Forum Trouble Ticket created for trash can ' + t.id + ' with id ' + response.httpResponse.body.id + '.')
+    })
     fiware.updateRequest(t.id, true)
+    fillTrashRandomly()
   }, fillTime)
 
 }
@@ -223,7 +229,7 @@ io.on('connection', function (socket) {
   // create trash
   socket.on('mark', function (trashID) {
     trash[trashID].marked = true
-    fiware.updateRequest(t.id, true)
+    fiware.updateRequest(trash.id, true)
     reallocateRobots()
     api.createIncident(trashID, function (response) {
       trash[trashID].ticket = response.httpResponse.body.id
